@@ -1,4 +1,4 @@
-# 🛠️ `sys-repair.sh` — Linux System Diagnostic & Repair Tool
+# 🛠️ `kernelkure.sh` — Linux System Diagnostic & Repair Tool
 
 > **Production-grade, interactive, root-privileged Bash script for diagnosing and repairing common Linux system failures — from boot issues to package corruption, disk errors, and log analysis.**
 
