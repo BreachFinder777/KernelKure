@@ -1,14 +1,17 @@
-# 🛠️ `KernelKure.sh` — Linux System Diagnostic & Repair Tool
+# KernelKure.sh
 
-> **Production-grade, interactive, root-privileged Bash script for diagnosing and repairing common Linux system failures — from boot issues to package corruption, disk errors, and log analysis.**
+**Linux System Diagnostic & Repair Tool**
+
+Production-grade, interactive, root-privileged Bash script for diagnosing and repairing common Linux system failures — from boot issues to package corruption, disk errors, and log analysis.
 
 ---
 
-## ✅ Overview
+## Overview
 
 `kernelkure.sh` is a comprehensive, modular, and safe-to-use diagnostic and repair tool designed for **Debian/Ubuntu**, **RHEL/Fedora/CentOS/Rocky/AlmaLinux**, and **Arch-based** systems. It provides guided, step-by-step repairs with user confirmation before any destructive action, automatic configuration backups, detailed logging, and color-coded terminal output for clarity.
 
-Whether you’re facing:
+Whether you're facing:
+
 - A **black screen or GRUB failure**
 - **Broken packages or lock files**
 - **Full disks or corrupted filesystems**
@@ -18,29 +21,29 @@ Whether you’re facing:
 
 ---
 
-## 📦 Supported Distributions
+## Supported Distributions
 
-| Family       | Distributions                                                                 |
-|--------------|-------------------------------------------------------------------------------|
-| **Debian**   | Ubuntu, Debian, Linux Mint, Pop!_OS, Kali, MX Linux, Raspberry Pi OS, etc.     |
-| **RHEL**     | RHEL, CentOS, Rocky Linux, AlmaLinux, Oracle Linux, Fedora                    |
-| **Arch**     | Arch Linux, Manjaro, EndeavourOS, Garuda, Artix                               |
-| *Limited*    | openSUSE, Gentoo, Void (basic detection only — full support in future)        |
+| Family     | Distributions                                                                   |
+| ---------- | ------------------------------------------------------------------------------- |
+| **Debian** | Ubuntu, Debian, Linux Mint, Pop!\_OS, Kali, MX Linux, Raspberry Pi OS, etc.    |
+| **RHEL**   | RHEL, CentOS, Rocky Linux, AlmaLinux, Oracle Linux, Fedora                     |
+| **Arch**   | Arch Linux, Manjaro, EndeavourOS, Garuda, Artix                                |
+| *Limited*  | openSUSE, Gentoo, Void (basic detection only — full support in future releases) |
 
 ---
 
-## ⚙️ Requirements
+## Requirements
 
 - **Root privileges** (`sudo`)
 - **Bash 4.0+**
 - Common system utilities: `lsblk`, `grep`, `awk`, `sed`, `findmnt`, `journalctl`, `dmesg`, etc.
-- Package managers: `apt`, `dnf/yum`, or `pacman` (depending on distro)
+- Package managers: `apt`, `dnf`/`yum`, or `pacman` (depending on distribution)
 - Disk tools: `fsck`, `blkid`
 - Optional: `lspci`, `nvidia-xconfig` (for GPU diagnostics)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Download or create the script
@@ -50,74 +53,75 @@ chmod +x kernelkure.sh
 sudo ./kernelkure.sh
 
 # Or run specific modules directly:
-sudo ./sys-repair.sh --boot      # Fix boot/display issues
-sudo ./sys-repair.sh --packages  # Repair broken packages
-sudo ./sys-repair.sh --disk      # Check disk health
-sudo ./sys-repair.sh --logs      # Extract critical logs
-sudo ./sys-repair.sh --all       # Run everything (interactive prompts)
+sudo ./kernelkure.sh --boot      # Fix boot/display issues
+sudo ./kernelkure.sh --packages  # Repair broken packages
+sudo ./kernelkure.sh --disk      # Check disk health
+sudo ./kernelkure.sh --logs      # Extract critical logs
+sudo ./kernelkure.sh --all       # Run everything (interactive prompts)
 ```
 
 ---
 
-## 🧩 Modules Explained
+## Modules
 
-### 1. 🔌 **Boot / Display Repair**
+### 1. Boot / Display Repair
 
-- **GRUB Reinstallation**: Auto-detects boot device (UEFI/BIOS), backs up configs, reinstalls bootloader.
-- **GPU Conflict Detection**: Checks for NVIDIA vs Nouveau driver conflicts, AMD vs Radeon, Intel i915.
-- **Black Screen Fixes**: Audits Xorg/Wayland configs, checks display manager status, suggests kernel parameters.
-- **X11/Wayland Configuration**: Regenerates configs, disables problematic overrides, enables DRM modesetting.
+- **GRUB Reinstallation** — Auto-detects boot device (UEFI/BIOS), backs up configs, reinstalls bootloader.
+- **GPU Conflict Detection** — Checks for NVIDIA vs. Nouveau driver conflicts, AMD vs. Radeon, Intel i915.
+- **Black Screen Fixes** — Audits Xorg/Wayland configs, checks display manager status, suggests kernel parameters.
+- **X11/Wayland Configuration** — Regenerates configs, disables problematic overrides, enables DRM modesetting.
 
-> 💡 *Perfect for when your system boots but shows a black screen or fails to start GUI.*
-
----
-
-### 2. 📦 **Package Manager Fixes**
-
-- **Lock Cleanup**: Removes stale `apt/dpkg`, `dnf/yum/rpm`, or `pacman` locks safely.
-- **Dependency Repair**: Runs `--fix-broken`, `distro-sync`, `pacman -Sy`, etc.
-- **Orphaned Packages**: Identifies and optionally removes unused packages.
-- **Cache Cleanup**: Frees space by cleaning package caches.
-
-> 🛑 *Never manually delete `/var/lib/dpkg/lock` again — let the script handle it safely.*
+> *Ideal for when your system boots but shows a black screen or fails to start the GUI.*
 
 ---
 
-### 3. 💾 **Disk & Filesystem Health**
+### 2. Package Manager Fixes
 
-- **Space Analysis**: Highlights partitions >80% full, suggests cleanup commands.
-- **Inode Usage**: Warns if inode tables are exhausted.
-- **fstab Validator**: Checks for invalid UUIDs, missing mount points, syntax errors.
-- **Filesystem Check (fsck)**: Scans unmounted partitions for corruption, auto-fixes where possible.
-- **Read-only Root FS Alert**: Detects emergency read-only mounts indicating serious errors.
+- **Lock Cleanup** — Removes stale `apt`/`dpkg`, `dnf`/`yum`/`rpm`, or `pacman` locks safely.
+- **Dependency Repair** — Runs `--fix-broken`, `distro-sync`, `pacman -Sy`, etc.
+- **Orphaned Packages** — Identifies and optionally removes unused packages.
+- **Cache Cleanup** — Frees space by cleaning package caches.
 
-> 📊 *Ideal for servers or workstations running out of space or showing I/O errors.*
-
----
-
-### 4. 📄 **Critical Log Extraction**
-
-- **System Journal Errors**: Extracts last 50 critical systemd journal entries.
-- **Kernel Issues**: Searches for panics, oops, segfaults in `dmesg`.
-- **OOM Events**: Finds Out-of-Memory killer activity.
-- **Failed Services**: Lists systemd units that failed to start.
-- **Service Error Summary**: Shows top 10 services generating errors.
-
-> 🕵️ *Essential for post-mortem analysis or preparing bug reports.*
+> *Never manually delete `/var/lib/dpkg/lock` again — let the script handle it safely.*
 
 ---
 
-## 📁 Backup & Logging
+### 3. Disk & Filesystem Health
+
+- **Space Analysis** — Highlights partitions above 80% usage, suggests cleanup commands.
+- **Inode Usage** — Warns if inode tables are exhausted.
+- **fstab Validator** — Checks for invalid UUIDs, missing mount points, and syntax errors.
+- **Filesystem Check (fsck)** — Scans unmounted partitions for corruption, auto-fixes where possible.
+- **Read-only Root FS Alert** — Detects emergency read-only mounts indicating serious errors.
+
+> *Essential for servers or workstations running out of space or showing I/O errors.*
+
+---
+
+### 4. Critical Log Extraction
+
+- **System Journal Errors** — Extracts the last 50 critical systemd journal entries.
+- **Kernel Issues** — Searches for panics, oops, and segfaults in `dmesg`.
+- **OOM Events** — Finds Out-of-Memory killer activity.
+- **Failed Services** — Lists systemd units that failed to start.
+- **Service Error Summary** — Shows the top 10 services generating errors.
+
+> *Essential for post-mortem analysis or preparing bug reports.*
+
+---
+
+## Backup & Logging
 
 ### Automatic Backups
 
-Before modifying any config file, the script creates timestamped backups under:
+Before modifying any configuration file, the script creates timestamped backups under:
 
 ```
 /var/backup/sys-repair-YYYYMMDD_HHMMSS/
 ```
 
-Example structure:
+**Example structure:**
+
 ```
 /var/backup/sys-repair-20250405_143022/
 ├── etc/
@@ -129,7 +133,8 @@ Example structure:
 └── etc/X11/xorg.conf.d/
 ```
 
-You can restore any file manually:
+**Restoring a backup:**
+
 ```bash
 cp /var/backup/sys-repair-*/etc/default/grub /etc/default/grub
 ```
@@ -139,48 +144,55 @@ cp /var/backup/sys-repair-*/etc/default/grub /etc/default/grub
 ### Detailed Logging
 
 All actions are logged to:
+
 ```
 /var/log/sys-repair.log
 ```
 
-Log includes:
+The log includes:
+
 - Timestamps
-- Operation type (INFO, SUCCESS, WARNING, ERROR)
+- Operation type (`INFO`, `SUCCESS`, `WARNING`, `ERROR`)
 - Commands executed
 - User confirmations
 - Module headers for easy navigation
 
-Enable debug logging:
+**Enable debug logging:**
+
 ```bash
-DEBUG=true sudo ./sys-repair.sh --boot
+DEBUG=true sudo ./kernelkure.sh --boot
 ```
 
 ---
 
-## 🎨 Terminal UI Features
+## Terminal UI Features
 
-- **Color-coded output** (Red = Error, Green = Success, Yellow = Warning, Blue = Info)
-- **Bold headers and dividers** for visual separation
-- **Interactive menus** with clear options
-- **User confirmation prompts** before dangerous operations
-- **Progress tracking** to avoid redundant operations
-
----
-
-## 🆘 Safety Features
-
-- ❗ **User confirmation required** before GRUB reinstall or lock removal
-- 🔄 **Idempotent design** — won’t re-run completed operations in same session
-- 💾 **Automatic config backup** before every modification
-- 🧭 **Distribution-aware logic** — uses correct package manager and paths
-- 🧯 **Error trapping and cleanup** — removes temp files on exit or interrupt
+| Feature                       | Description                                           |
+| ----------------------------- | ----------------------------------------------------- |
+| Color-coded output            | Red = Error, Green = Success, Yellow = Warning, Blue = Info |
+| Bold headers and dividers     | Visual separation between modules and sections        |
+| Interactive menus             | Clear options with numbered selections                |
+| Confirmation prompts          | Required before any destructive operation             |
+| Progress tracking             | Avoids redundant operations within the same session   |
 
 ---
 
-## 📖 Command-Line Options
+## Safety Features
 
-```bash
-sudo ./sys-repair.sh [OPTION]
+| Feature                        | Detail                                                           |
+| ------------------------------ | ---------------------------------------------------------------- |
+| User confirmation required     | Before GRUB reinstall, lock removal, or any destructive action   |
+| Idempotent design              | Will not re-run completed operations in the same session         |
+| Automatic config backup        | Before every modification                                        |
+| Distribution-aware logic       | Uses correct package manager and file paths per distro           |
+| Error trapping and cleanup     | Removes temp files on exit or interrupt (via `trap`)             |
+
+---
+
+## Command-Line Options
+
+```
+Usage: sudo ./kernelkure.sh [OPTION]
 
 OPTIONS:
     --all          Run all diagnostics and repairs interactively
@@ -192,15 +204,15 @@ OPTIONS:
     --version, -v  Show script version
 
 EXAMPLES:
-    sudo ./sys-repair.sh                 # Interactive menu
-    sudo ./sys-repair.sh --all           # Full system check (with prompts)
-    sudo ./sys-repair.sh --boot          # Fix boot issues only
-    sudo ./sys-repair.sh --logs          # Just extract error logs for review
+    sudo ./kernelkure.sh                 # Interactive menu
+    sudo ./kernelkure.sh --all           # Full system check (with prompts)
+    sudo ./kernelkure.sh --boot          # Fix boot issues only
+    sudo ./kernelkure.sh --logs          # Extract error logs for review
 ```
 
 ---
 
-## 🧑‍💻 For Advanced Users
+## For Advanced Users
 
 ### Customize Behavior
 
@@ -208,51 +220,53 @@ Set environment variables before running:
 
 ```bash
 # Enable verbose debug logging
-DEBUG=true sudo ./sys-repair.sh --boot
+DEBUG=true sudo ./kernelkure.sh --boot
 
 # Change backup directory (default: /var/backup/...)
 export BACKUP_DIR="/opt/backups/sys-repair-$(date +%Y%m%d_%H%M%S)"
-sudo ./sys-repair.sh --all
+sudo ./kernelkure.sh --all
 ```
 
 ### Extend Support
 
-The script’s modular structure makes it easy to add support for:
+The script's modular structure makes it straightforward to add support for:
+
 - Other init systems (runit, s6)
 - Additional package managers (apk, pkg)
 - Cloud-specific diagnostics (AWS, Azure metadata checks)
 - Hardware RAID or LVM diagnostics
 
-> 💡 Contributions welcome! Fork and submit PRs.
+Contributions are welcome. Fork the repository and submit a pull request.
 
 ---
 
-## 📜 License
+## License
 
-**MIT License** — Free to use, modify, and distribute — even commercially.
-
----
-
-## 📞 Support & Feedback
-
-Found a bug? Have a feature request?
-
-👉 Open an issue on GitHub or contact the author:  
-**Senior Linux Systems Engineer** — *Designed for production environments, tested in crisis recovery scenarios.*
+**MIT License** — Free to use, modify, and distribute, including for commercial purposes.
 
 ---
 
-## 🧭 Final Notes
+## Support & Feedback
 
-✅ Always **reboot after major repairs** (especially GRUB or driver changes).  
-✅ Review **`/var/log/sys-repair.log`** if something goes wrong.  
-✅ Keep **recovery media** ready when repairing bootloaders.  
-✅ Use `--logs` first to understand the problem before applying fixes.
+Found a bug or have a feature request? Open an issue on GitHub.
 
----
-
-> “An ounce of prevention is worth a pound of cure — but when your system breaks at 3 AM, this script is your emergency toolkit.” 💪🐧
+**Author:** Senior Linux Systems Engineer  
+*Designed for production environments. Tested in crisis recovery scenarios.*
 
 ---
 
-📄 **Save this README alongside `KernelKure.sh` for quick reference during emergencies.**
+## Final Notes
+
+- Always **reboot after major repairs**, especially GRUB or driver changes.
+- Review `/var/log/sys-repair.log` if something goes wrong.
+- Keep **recovery media** ready when repairing bootloaders.
+- Use `--logs` first to understand the problem before applying fixes.
+
+---
+
+> *"An ounce of prevention is worth a pound of cure — but when your system breaks at 3 AM, this script is your emergency toolkit."*
+
+---
+
+*Save this README alongside `kernelkure.sh` for quick reference during emergencies.*
+```
