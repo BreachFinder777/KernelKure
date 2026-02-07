@@ -1,4 +1,4 @@
-# 🛠️ `kernelkure.sh` — Linux System Diagnostic & Repair Tool
+# 🛠️ `KernelKure.sh` — Linux System Diagnostic & Repair Tool
 
 > **Production-grade, interactive, root-privileged Bash script for diagnosing and repairing common Linux system failures — from boot issues to package corruption, disk errors, and log analysis.**
 
@@ -255,4 +255,4 @@ Found a bug? Have a feature request?
 
 ---
 
-📄 **Save this README alongside `sys-repair.sh` for quick reference during emergencies.**
+📄 **Save this README alongside `KernelKure.sh` for quick reference during emergencies.**
